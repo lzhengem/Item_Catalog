@@ -8,7 +8,7 @@ Base = declarative_base()
 class Category(Base):
     __tablename__ = 'category'
     id = Column(Integer, primary_key = True)
-    name = Column(String, index = True, nullable=False)
+    name = Column(String, index = True, nullable=False, unique=True)
 
     @property
     def serialize(self):
@@ -19,7 +19,7 @@ class Category(Base):
 class Item(Base):
     __tablename__ = 'item'
     id = Column(Integer, primary_key = True)
-    title = Column(String, nullable=False)
+    title = Column(String, index = True, nullable=False, unique=True)
     description = Column(String)
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
