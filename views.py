@@ -44,7 +44,7 @@ def delete(item):
 #create new item
 @app.route("/catalog/new/", methods=["GET","POST"])
 def new():
-    return "You are making a new item!"
+    return render_template('new.html')
 
 
 
