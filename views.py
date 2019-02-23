@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item
@@ -14,8 +14,7 @@ session = DBSession()
 @app.route("/catalog/")
 def homepage():
     categories = session.query(Category).all()
-    # return "You are at the homepage!"
-    return jsonify([category.serialize["name"] for category in categories])
+    return render_template('homepage.html', categories=categories)
 
 #a json output of all the categories
 @app.route("/catalog.json")
