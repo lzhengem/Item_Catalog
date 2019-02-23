@@ -2,27 +2,39 @@ from flask import Flask
 
 app = Flask(__name__)
 
+#lists all the categories
 @app.route("/")
+@app.route("/catalog/")
 def homepage():
     return "You are at the homepage!"
 
+#a json output of all the categories
+@app.route("/catalog.json")
+def category_json():
+    return "You are at the category json page!"
+
+#added items in selected category
 @app.route("/catalog/<category>/items/")
-def catalog(category):
+def category_items(category):
     return "You are viewing %s items!" % category
 
+#specifit item in the category
+@app.route("/catalog/<category>/<item>/")
+def item(category,item):
+    return "You are viewing %s in %s!" % (item,category)
+
+#edit the category
 @app.route("/catalog/<category>/edit/")
 def edit(category):
     return "You are viewing %s edit page!" % category
 
-
+#delete the category
 @app.route("/catalog/<category>/delete/")
 def delete(category):
     return "You are viewing %s delete page!" % category
 
 
-@app.route("/catalog/<category>/<item>/")
-def item(category,item):
-    return "You are viewing %s in %s!" % (item,category)
+
 
 if __name__ == '__main__':
     app.debug = True
