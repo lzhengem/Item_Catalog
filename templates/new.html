@@ -7,8 +7,14 @@
             Description:
             <input type="text" name="description"></br>
             Category:
-            <input type="text" name="category"></br>
+            <select name="category">
+                {% for category in categories%}
+                    <option value="{{category.id}}"> {{category.name}} </option>
+                {% endfor%}
+                
+            </select>
             <button>Submit</button>
+                
         </form>
     </body>
 </html>
