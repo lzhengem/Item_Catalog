@@ -14,7 +14,7 @@ session = DBSession()
 @app.route("/catalog/")
 def catalog():
     categories = session.query(Category).all()
-    return render_template('homepage.html', categories=categories)
+    return render_template('catalog.html', categories=categories)
 
 #a json output of all the categories
 @app.route("/catalog.json")
@@ -42,8 +42,8 @@ def delete(item):
     return "You are viewing %s delete page!" % item
 
 #create new item
-@app.route("/catalog/item/", methods=["GET","POST"])
-def new_item():
+@app.route("/catalog/new/", methods=["GET","POST"])
+def new():
     return "You are making a new item!"
 
 
