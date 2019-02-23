@@ -1,12 +1,21 @@
-from flask import Flask
+from flask import Flask, jsonify
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from models import Base, Category, Item
 
 app = Flask(__name__)
+engine = create_engine('postgresql+psycopg2:///item_catalog')
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 #lists all the categories
 @app.route("/")
 @app.route("/catalog/")
 def homepage():
-    return "You are at the homepage!"
+    categories = session.query(Category).all()
+    # return "You are at the homepage!"
+    return jsonify([category.serialize["name"] for category in categories])
 
 #a json output of all the categories
 @app.route("/catalog.json")
