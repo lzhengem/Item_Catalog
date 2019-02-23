@@ -12,7 +12,7 @@ session = DBSession()
 #lists all the categories
 @app.route("/")
 @app.route("/catalog/")
-def homepage():
+def catalog():
     categories = session.query(Category).all()
     return render_template('homepage.html', categories=categories)
 
