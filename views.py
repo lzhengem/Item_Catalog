@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item
@@ -26,7 +26,7 @@ def category_json():
 def category_items(category):
     return "You are viewing %s items!" % category
 
-#specifit item in the category
+#specific item in the category
 @app.route("/catalog/<category>/<item>/")
 def item(category,item):
     return "You are viewing %s in %s!" % (item,category)
@@ -40,6 +40,11 @@ def edit(item):
 @app.route("/catalog/<item>/delete/")
 def delete(item):
     return "You are viewing %s delete page!" % item
+
+#create new item
+@app.route("/catalog/item/", methods=["GET","POST"])
+def new_item():
+    return "You are making a new item!"
 
 
 
