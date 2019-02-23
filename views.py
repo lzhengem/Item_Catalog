@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, url_for
+from flask import Flask, jsonify, render_template, url_for, request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item
@@ -44,7 +44,13 @@ def delete(item):
 #create new item
 @app.route("/catalog/new/", methods=["GET","POST"])
 def new():
-    return render_template('new.html')
+    if request.method == 'POST':
+        cat_id = request.form.get('category')
+        title = request.form.get('title')
+        description = request.form.get('description')
+        return "category id: %s , title: %s, description: %s" % (cat_id,title,description)
+    categories = session.query(Category).all()
+    return render_template('new.html',categories=categories)
 
 
 
