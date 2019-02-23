@@ -24,14 +24,14 @@ def item(category,item):
     return "You are viewing %s in %s!" % (item,category)
 
 #edit the category
-@app.route("/catalog/<category>/edit/")
-def edit(category):
-    return "You are viewing %s edit page!" % category
+@app.route("/catalog/<item>/edit/")
+def edit(item):
+    return "You are viewing %s edit page!" % item
 
 #delete the category
-@app.route("/catalog/<category>/delete/")
-def delete(category):
-    return "You are viewing %s delete page!" % category
+@app.route("/catalog/<item>/delete/")
+def delete(item):
+    return "You are viewing %s delete page!" % item
 
 
 
