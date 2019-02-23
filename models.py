@@ -10,6 +10,12 @@ class Category(Base):
     id = Column(Integer, primary_key = True)
     name = Column(String, index = True, nullable=False)
 
+    @property
+    def serialize(self):
+        return {'id' : self.id,
+                'name' : self.name}
+    
+
 class Item(Base):
     __tablename__ = 'item'
     id = Column(Integer, primary_key = True)
@@ -17,6 +23,13 @@ class Item(Base):
     description = Column(String)
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
+
+    @property
+    def serialize(self):
+        return {'cat_id' : self.category_id,
+                'description' : self.description,
+                'id' : self.id,
+                'title' : self.title}    
 
 engine=create_engine('postgresql+psycopg2:///item_catalog')
 Base.metadata.create_all(engine)
