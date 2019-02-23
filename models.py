@@ -21,7 +21,7 @@ class Item(Base):
     id = Column(Integer, primary_key = True)
     title = Column(String, index = True, nullable=False, unique=True)
     description = Column(String)
-    category_id = Column(Integer, ForeignKey('category.id'))
+    cat_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
 
     @property
