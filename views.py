@@ -66,14 +66,20 @@ def edit(item_title):
         title = request.form.get('title').strip()
         description = request.form.get('description')
         cat_id = request.form.get('cat_id')
-        #only update the title if they provided one
-        if title:
-            item.title = title
-        item.description = description
-        item.cat_id = cat_id
-        session.add(item)
+    
+        #only update if they changed one of the fields. avoids db hits
+        if item.description != description or str(item.cat_id) != cat_id or item.title != title:
 
-        return "You have updated %s" % item.title
+            #only update the title if they provided a title that is not empty
+            if title:
+                item.title = title        
+            item.description = description
+            item.cat_id = cat_id
+            session.add(item)
+
+            return "You have updated %s" % item.title
+        else:
+            return "You didnt change anything!"
     elif request.method == 'GET':
         if item:
             categories = session.query(Category).all()
