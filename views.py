@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, url_for, request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item
+import html
 import os
 
 app = Flask(__name__)
@@ -32,7 +33,8 @@ def category_json():
 #added items in selected category
 @app.route("/catalog/<category_name>/items/")
 def category_items(category_name):
-    category = session.query(Category).filter_by(name=category_name).first()
+    safe_category_name = html.escape(category_name)
+    category = session.query(Category).filter_by(name=safe_category_name).first()
     if category is None:
         return "There is no such category as %s!" % category_name
     items = session.query(Item).filter_by(cat_id=category.id)
@@ -41,8 +43,10 @@ def category_items(category_name):
 #specific item in the category
 @app.route("/catalog/<category_name>/<item_title>/")
 def item(category_name,item_title):
-    category = session.query(Category).filter_by(name=category_name).first()
-    item = session.query(Item).filter_by(title=item_title).first()
+    safe_category_name = html.escape(category_name)
+    safe_item_title = html.escape(item_title)
+    category = session.query(Category).filter_by(name=safe_category_name).first()
+    item = session.query(Item).filter_by(title=safe_item_title).first()
     if category is None:
         return "Category '%s' does not exist!" % category_name
     elif item is None:
