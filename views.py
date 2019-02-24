@@ -7,8 +7,10 @@ import os
 app = Flask(__name__)
 # print(os.getenv('FLASK_ENV')) 
 if os.getenv('FLASK_ENV') == 'development':
+    debug = True
     engine = create_engine('postgresql+psycopg2:///item_catalog')
 elif os.getenv('FLASK_ENV') == 'production':
+    debug = False
     database_url = os.getenv('DATABASE_URL')
     engine = create_engine(database_url)
 Base.metadata.bind = engine
@@ -70,5 +72,6 @@ def new():
 
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host='0.0.0.0',port=8000)
+    app.debug = debug
+    port = int(os.environ.get('PORT',8000))
+    app.run(host='0.0.0.0',port=port)
