@@ -56,7 +56,7 @@ def new():
         #check to see if they entered a title
         if request.form.get('title'):
             title = request.form.get('title')
-            if session.query(Item).one() is not None:
+            if session.query(Item).filter_by(title=title).first() is not None:
                 return "That item exists already"
 
             cat_id = request.form.get('category')
