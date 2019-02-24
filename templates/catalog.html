@@ -3,7 +3,7 @@
         Categories:
         <ul>
         {% for category in categories%}
-            <li>{{category["name"]}}</li>
+            <li><a href="{{url_for('category_items',category_name=category.name)}}"> {{category["name"]}}</a></li>
 
         {% endfor%}
         </ul>
