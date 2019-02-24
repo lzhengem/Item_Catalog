@@ -56,9 +56,30 @@ def item(category_name,item_title):
     return render_template('item.html',category=category,item=item)
 
 #edit the category
-@app.route("/catalog/<item>/edit/")
-def edit(item):
-    return "You are viewing %s edit page!" % item
+@app.route("/catalog/<item_title>/edit", methods=["GET","POST"])
+def edit(item_title):
+    safe_item_title = html.escape(item_title)
+    item = session.query(Item).filter_by(title=safe_item_title).first()
+
+    #if they are trying to update, check if they entered any data for title and description
+    if request.method == "POST":
+        title = request.form.get('title').strip()
+        description = request.form.get('description')
+        cat_id = request.form.get('cat_id')
+        #only update the title if they provided one
+        if title:
+            item.title = title
+        item.description = description
+        item.cat_id = cat_id
+        session.add(item)
+
+        return "You have updated %s" % item.title
+    elif request.method == 'GET':
+        if item:
+            categories = session.query(Category).all()
+            return render_template('edit.html',item=item,categories=categories)
+        else:
+            return "That item does not exist!"
 
 #delete the category
 @app.route("/catalog/<item>/delete/")
