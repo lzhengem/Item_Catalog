@@ -5,7 +5,7 @@ Item Catalog is an app that provides a list of items within a variety of categor
 
 This project is viewable at https://lz-item-catalog.herokuapp.com
 ## Installation
-1. python2.7
+1. python3.5
 
 2. flask
 
