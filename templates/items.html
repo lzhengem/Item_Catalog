@@ -4,7 +4,7 @@
         {% if items.first() is not none: %}
             <ul>
             {% for item in items:%}
-                <li>{{item.title}}</li>
+                <li><a href="{{url_for('item',category_name=category.name,item_title=item.title)}}">{{item.title}}</a></li>
             {% endfor %}
             </ul>
         {% else %}
