@@ -1,7 +1,16 @@
 <html>
     <body>
         {{ category.name }} items:
+        {% if items.first() is not none: %}
+            <ul>
+            {% for item in items:%}
+                <li>{{item.title}}</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            </br>
+            There are no items here!
+        {% endif %}
         
     </body>
-        }
 </html>

@@ -36,7 +36,6 @@ def category_items(category_name):
     if category is None:
         return "There is no such category as %s!" % category_name
     items = session.query(Item).filter_by(cat_id=category.id)
-    # return "You are viewing %s items!" % category_name
     return render_template('items.html', category=category, items=items)
 
 #specific item in the category
