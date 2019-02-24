@@ -3,6 +3,7 @@
 
 Item Catalog is an app that provides a list of items within a variety of categories, as well as provide a user registration and authentication system.
 
+This project is viewable at https://lz-item-catalog.herokuapp.com
 ## Installation
 1. python2.7
 
@@ -11,7 +12,7 @@ Item Catalog is an app that provides a list of items within a variety of categor
 ## Usage
 1. Run the project
 ```python views.py```
-2. Go on your web browser to http://localhost:8500
+2. Go on your web browser to http://localhost:8000
 
 ## Description
 * Homepage displays all current categories along with the latest added items.
