@@ -47,8 +47,11 @@ def new():
     if request.method == 'POST':
         #check to see if they entered a title
         if request.form.get('title'):
-            cat_id = request.form.get('category')
             title = request.form.get('title')
+            if session.query(Item).one() is not None:
+                return "That item exists already"
+
+            cat_id = request.form.get('category')
             description = request.form.get('description')
             item = Item(cat_id=cat_id,title=title,description=description)
             session.add(item)
