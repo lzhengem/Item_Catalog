@@ -2,7 +2,8 @@
     <body>
         {{ item.title }}:
         {{item.description}}
-        
+        <br></br>
+        <a href="{{url_for('edit',item_title=item.title)}}">Edit {{item.title}}</a>
         <br></br>
         <a href="{{url_for('category_items',category_name=category.name)}}">Back to {{category.name}}</a>
         <br></br>
