@@ -45,10 +45,15 @@ def delete(item):
 @app.route("/catalog/new/", methods=["GET","POST"])
 def new():
     if request.method == 'POST':
-        cat_id = request.form.get('category')
-        title = request.form.get('title')
-        description = request.form.get('description')
-        return "category id: %s , title: %s, description: %s" % (cat_id,title,description)
+        #check to see if they entered a title
+        if request.form.get('title'):
+            cat_id = request.form.get('category')
+            title = request.form.get('title')
+            description = request.form.get('description')
+            item = Item(cat_id=cat_id,title=title,description=description)
+            session.add(item)
+            session.commit()
+            return "You have added a new item! category id: %s , title: %s, description: %s" % (cat_id,title,description)
     categories = session.query(Category).all()
     return render_template('new.html',categories=categories)
 
