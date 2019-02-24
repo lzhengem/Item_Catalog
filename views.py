@@ -30,9 +30,14 @@ def category_json():
     return "You are at the category json page!"
 
 #added items in selected category
-@app.route("/catalog/<category>/items/")
-def category_items(category):
-    return "You are viewing %s items!" % category
+@app.route("/catalog/<category_name>/items/")
+def category_items(category_name):
+    category = session.query(Category).filter_by(name=category_name).first()
+    if category is None:
+        return "There is no such category as %s!" % category_name
+    items = session.query(Item).filter_by(cat_id=category.id)
+    # return "You are viewing %s items!" % category_name
+    return render_template('items.html', category=category, items=items)
 
 #specific item in the category
 @app.route("/catalog/<category>/<item>/")
