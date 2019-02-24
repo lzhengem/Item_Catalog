@@ -2,9 +2,15 @@ from flask import Flask, jsonify, render_template, url_for, request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item
+import os
 
 app = Flask(__name__)
-engine = create_engine('postgresql+psycopg2:///item_catalog')
+# print(os.getenv('FLASK_ENV')) 
+if os.getenv('FLASK_ENV') == 'development':
+    engine = create_engine('postgresql+psycopg2:///item_catalog')
+elif os.getenv('FLASK_ENV') == 'production':
+    database_url = os.getenv('DATABASE_URL')
+    engine = create_engine(database_url)
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
