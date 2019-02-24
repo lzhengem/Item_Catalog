@@ -39,9 +39,17 @@ def category_items(category_name):
     return render_template('items.html', category=category, items=items)
 
 #specific item in the category
-@app.route("/catalog/<category>/<item>/")
-def item(category,item):
-    return "You are viewing %s in %s!" % (item,category)
+@app.route("/catalog/<category_name>/<item_title>/")
+def item(category_name,item_title):
+    category = session.query(Category).filter_by(name=category_name).first()
+    item = session.query(Item).filter_by(title=item_title).first()
+    if category is None:
+        return "Category '%s' does not exist!" % category_name
+    elif item is None:
+        return "Item '%s' does not exist!" % item_title
+    elif item.category != category:
+        return "%s does not have an item '%s'" %(category_name, item_title)
+    return render_template('item.html',category=category,item=item)
 
 #edit the category
 @app.route("/catalog/<item>/edit/")
