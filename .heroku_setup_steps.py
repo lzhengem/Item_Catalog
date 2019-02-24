@@ -24,3 +24,23 @@ $heroku config:set FLASK_ENV=production
 
 #show you env variables on heroku
 $ heroku config
+
+#next, update models.py, views.py, insert_categories.py so that if it is production (heroku), then it uses the production database link
+import os
+
+if os.getenv('FLASK_ENV') == 'development':
+    engine = create_engine('postgresql+psycopg2:///item_catalog')
+elif os.getenv('FLASK_ENV') == 'production':
+    database_url = os.getenv('DATABASE_URL')
+    engine = create_engine(database_url)
+
+#create the models in the heroku database
+$heroku run python3 models.py
+
+#insert categories into heroku database
+$ heroku run python3 insert_categories.py
+
+#change port to heroku's perferred port -changed in views.py
+    app.debug = debug
+    port = int(os.environ.get('PORT',8000))
+    app.run(host='0.0.0.0',port=port)
