@@ -56,7 +56,7 @@ def item(category_name,item_title):
     return render_template('item.html',category=category,item=item)
 
 #edit the category
-@app.route("/catalog/<item_title>/edit", methods=["GET","POST"])
+@app.route("/catalog/<item_title>/edit/", methods=["GET","POST"])
 def edit(item_title):
     safe_item_title = html.escape(item_title)
     item = session.query(Item).filter_by(title=safe_item_title).first()
@@ -88,9 +88,15 @@ def edit(item_title):
             return "That item does not exist!"
 
 #delete the category
-@app.route("/catalog/<item>/delete/")
-def delete(item):
-    return "You are viewing %s delete page!" % item
+@app.route("/catalog/<item_title>/delete/")
+def delete(item_title, methods=["GET","DELETE"]):
+    safe_item_title = html.escape(item_title)
+    item = session.query(Item).filter_by(title=safe_item_title).first()
+
+    if request.method == "DELETE":
+        return ("ok almost deded")
+    return render_template('delete.html',item=item)
+
 
 #create new item
 @app.route("/catalog/new/", methods=["GET","POST"])
