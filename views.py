@@ -4,7 +4,14 @@ from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item
 import os
 
+#for login
+from flask import session as login_session
+import random, string
+
+
 app = Flask(__name__)
+app.secret_key = 'super_secret_key'
+
 if os.getenv('FLASK_ENV') == 'development':
     debug = True
     engine = create_engine('postgresql+psycopg2:///item_catalog')
@@ -119,10 +126,18 @@ def new():
     categories = session.query(Category).all()
     return render_template('new.html',categories=categories)
 
-
+#allow users to log in
+@app.route('/login/')
+def showLogin():
+    #create a random string state to prevent cross site forgery
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+    #save state in session
+    login_session['state'] = state
+    return 'login page'
 
 
 if __name__ == '__main__':
+
     app.debug = debug
     port = int(os.environ.get('PORT',8000))
     app.run(host='0.0.0.0',port=port)
