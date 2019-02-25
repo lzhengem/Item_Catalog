@@ -139,7 +139,7 @@ def showLogin():
 def gconnect():
     state = request.args.get('state')
     print(state)
-    response = make_response(json.dumps('Successfully Connected user',200))
+    response = make_response(json.dumps('Successfully Connected user'),200)
     return response
 
 
