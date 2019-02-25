@@ -82,13 +82,22 @@ def edit(item_id):
             return "That item does not exist!"
 
 #delete the category
-@app.route("/catalog/<item_id>/delete/")
-def delete(item_id, methods=["GET","DELETE"]):
+@app.route("/catalog/<item_id>/delete/",methods=["GET","POST"])
+def delete(item_id):
     item = session.query(Item).filter_by(id=item_id).first()
 
-    if request.method == "DELETE":
-        return ("ok almost deded")
-    return render_template('delete.html',item=item)
+    #check if the item exists
+    if item is not null:
+        #if it is a post method, delete it from the database
+        if request.method == "POST":
+            session.delete(item)
+            session.commit()
+            return 'Item was deleted'
+        #if it is a get method, show the button to confirm if user wants to delete item
+        return render_template('delete.html',item=item)
+    #if the item does not exist, let the user know 
+    else:
+        return "Item %s does not exist" %item_id
 
 
 #create new item

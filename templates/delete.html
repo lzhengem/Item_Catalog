@@ -1,11 +1,11 @@
 <html>
     <body>
         <h1>Deleting {{item.title}} </h1>
-        <from action="{{url_for('delete', item_id = item.id)}}" method="POST">
+        <form action="{{url_for('delete', item_id = item.id)}}" method="POST">
             <input type="hidden" name="_method" value="DELETE" />
             Are you sure you want to delete {{item.title}}
             <button>Yes</button>
-            <button>No</button>
-        </from>
+            
+        </form>
     </body>
 </html>
