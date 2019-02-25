@@ -87,7 +87,7 @@ def delete(item_id):
     item = session.query(Item).filter_by(id=item_id).first()
 
     #check if the item exists
-    if item is not null:
+    if item is not None:
         #if it is a post method, delete it from the database
         if request.method == "POST":
             session.delete(item)
