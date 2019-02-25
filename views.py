@@ -2,11 +2,9 @@ from flask import Flask, jsonify, render_template, url_for, request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item
-import html
 import os
 
 app = Flask(__name__)
-# print(os.getenv('FLASK_ENV')) 
 if os.getenv('FLASK_ENV') == 'development':
     debug = True
     engine = create_engine('postgresql+psycopg2:///item_catalog')
@@ -31,35 +29,31 @@ def category_json():
     return "You are at the category json page!"
 
 #added items in selected category
-@app.route("/catalog/<category_name>/items/")
-def category_items(category_name):
-    safe_category_name = html.escape(category_name)
-    category = session.query(Category).filter_by(name=safe_category_name).first()
+@app.route("/catalog/<category_id>/items/")
+def category_items(category_id):
+    category = session.query(Category).filter_by(id=category_id).first()
     if category is None:
         return "There is no such category as %s!" % category_name
     items = session.query(Item).filter_by(cat_id=category.id)
     return render_template('items.html', category=category, items=items)
 
 #specific item in the category
-@app.route("/catalog/<category_name>/<item_title>/")
-def item(category_name,item_title):
-    safe_category_name = html.escape(category_name)
-    safe_item_title = html.escape(item_title)
-    category = session.query(Category).filter_by(name=safe_category_name).first()
-    item = session.query(Item).filter_by(title=safe_item_title).first()
+@app.route("/catalog/<category_id>/<item_id>/")
+def item(category_id,item_id):
+    category = session.query(Category).filter_by(id=category_id).first()
+    item = session.query(Item).filter_by(id=item_id).first()
     if category is None:
-        return "Category '%s' does not exist!" % category_name
+        return "Category '%s' does not exist!" % category_id
     elif item is None:
-        return "Item '%s' does not exist!" % item_title
+        return "Item '%s' does not exist!" % item_id
     elif item.category != category:
-        return "%s does not have an item '%s'" %(category_name, item_title)
+        return "%s does not have an item '%s'" %(category_id, item_id)
     return render_template('item.html',category=category,item=item)
 
 #edit the category
-@app.route("/catalog/<item_title>/edit/", methods=["GET","POST"])
-def edit(item_title):
-    safe_item_title = html.escape(item_title)
-    item = session.query(Item).filter_by(title=safe_item_title).first()
+@app.route("/catalog/<item_id>/edit/", methods=["GET","POST"])
+def edit(item_id):
+    item = session.query(Item).filter_by(id=item_id).first()
 
     #if they are trying to update, check if they entered any data for title and description
     if request.method == "POST":
@@ -88,10 +82,9 @@ def edit(item_title):
             return "That item does not exist!"
 
 #delete the category
-@app.route("/catalog/<item_title>/delete/")
-def delete(item_title, methods=["GET","DELETE"]):
-    safe_item_title = html.escape(item_title)
-    item = session.query(Item).filter_by(title=safe_item_title).first()
+@app.route("/catalog/<item_id>/delete/")
+def delete(item_id, methods=["GET","DELETE"]):
+    item = session.query(Item).filter_by(id=item_id).first()
 
     if request.method == "DELETE":
         return ("ok almost deded")

@@ -1,7 +1,7 @@
 <html>
     <body>
         <h1>Edit {{item.title}}:</h1>
-        <form action="{{url_for('edit',item_title=item.title)}}" method="POST">
+        <form action="{{url_for('edit',item_id=item.id)}}" method="POST">
             Title:
             <input type="text" name="title" value="{{item.title}}"></br>
             Description:
