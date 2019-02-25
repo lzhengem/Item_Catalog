@@ -3,14 +3,15 @@
         <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script src="//apis.google.com/js/platform.js?onload=start"></script>
-        <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->        
-    </head>
-    <body>
-        <h1>Login page</h1>
-        <!-- GOOGLE PLUS SIGN IN-->
-        <div id="signinButton">
+        <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
 
-            <!-- Google login button -->
+    </head>
+
+
+    <body>
+        <!-- GOOGLE PLUS SIGN IN-->
+
+        <div id="signinButton">
             <span class="g-signin"
                 data-scope="openid email profile"
                 data-clientid="969469785706-k799tcl9nple8g3h1fkbdnqutk3s85rs.apps.googleusercontent.com"
@@ -18,50 +19,45 @@
                 data-accesstype="offline"
                 data-cookiepolicy="single_host_origin"
                 data-callback="signInCallback"
-                data-approvalprompt="force">
-                    
+                data-approvalprompt="force">                
             </span>
-         
         </div>
-        <!-- result div to show login results -->
+
         <div id="result"></div>
         <script>
-            function signInCallback(authResult){
-                if (authResult['code']){ //if google send back a code, it means login was successfull
-                    $('#signinButton').attr('style','display:none') //hide the signin button if logged in
-                    //asynchronously send a POST request to /gconnect?state={{STATE}}
+            function signInCallback(authResult) {
+                console.log("my object: %o", authResult);
+                if (authResult['code']) { //if google sent back a code, that means the login was sucessful
+                    //hide the signin button
+                    $('#signinButton').attr('style','display:none');
+                    //send the one time use code to the server. if the server responds, write a 'login sucessfull' message to the webpage and then redirect back to the main restaurant page
                     $.ajax({
+                        //asynchronously send a POST request to /gconnect?state={{STATE}}
                         type: 'POST',
-                        url: '/gconnect?state={{STATE}}',
+                        url: '/gconnect?state={{STATE}}', //need to define gconnect method. STATE is our server state token to prevent requests forgery
                         processData: false, //do not ask jQuery to process response as string
-                        contentType: 'application/octet-strem; charset=utf-8', //indicates we are sending arbitrary binary stream of data
-                        data: authResult['code'], //send the google code
-
-                        //if we get success code from post request, display login successful 
+                        contentType: 'application/octet-stream; charset=utf-8', //indicates we are sending arbitrary binary stream of data
+                        data: authResult['code'], //the data we will send
+                        //if we get success code from the post request,display login successfull
                         success: function(result){
-                            if(result){
-                                //if successful, show login successful then redirect to main page
-                                $('#result').html('Login Successful!</br>' + result + '</br>Redirecting....')
-                                setTimeout(function(){
-                                    window.location.href = "/";
-
-                                },4000);
-
-                            //if login not successful, show message
-                            }else{
-                                $('#result').html('Failed to make a server-side call. Check your configuration and console');
+                            if(result){ //result is any additional information google server has to give us
+                                $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
+                                setTimeout(function(){window.location.href="/catalog/";},4000);
                             }
-
+                            //if there was an error, then log it
+                            else if (authResult['error']){
+                                console.log('There was an error: ' + authResult['error']);
+                            }
+                            //if there was no response, tell user to check config
+                            else{
+                                $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                            }
                         }
-
-                    })
-
+                    });
                 }
             }
         </script>
-        <!-- END GOOGLE PLUS SIGN IN-->
+        <!--END GOOGLE PLUS SIGN IN -->
 
-
-        
     </body>
 </html>
