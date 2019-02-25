@@ -133,7 +133,7 @@ def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
     #save state in session
     login_session['state'] = state
-    return 'login page'
+    return render_template('login.html')
 
 
 if __name__ == '__main__':
