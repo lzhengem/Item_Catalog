@@ -5,9 +5,9 @@ from models import Base, Category, Item
 import os
 
 #for login
-from flask import session as login_session
+from flask import session as login_session, make_response
 import random, string
-
+import json
 
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
@@ -133,7 +133,14 @@ def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
     #save state in session
     login_session['state'] = state
-    return render_template('login.html')
+    return render_template('login.html',STATE=state)
+
+@app.route('/gconnect', methods=["POST"])
+def gconnect():
+    state = request.args.get('state')
+    print(state)
+    response = make_response(json.dumps('Successfully Connected user',200))
+    return response
 
 
 if __name__ == '__main__':
