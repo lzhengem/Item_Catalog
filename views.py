@@ -138,7 +138,12 @@ def showLogin():
 @app.route('/gconnect', methods=["POST"])
 def gconnect():
     state = request.args.get('state')
-    print(state)
+    # print(state)
+    #if the state is not the same, then this person is not the one who logged in our login page
+    if state != login_session['state']:
+        response = make_response(json.dumps('Invalid state parameter.'),401)
+        response.headers['Content-type'] = 'application/json'
+        return response
     response = make_response(json.dumps('Successfully Connected user'),200)
     return response
 
