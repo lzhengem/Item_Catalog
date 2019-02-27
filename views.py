@@ -153,12 +153,12 @@ def gconnect():
     #if the state tokens match, then get the google one time use code
     code = request.data
     try:
-        client_id = os.environ.get('ITEM_CATALOG_GOOGLE_ID')
-        client_secret = os.environ.get('ITEM_CATALOG_GOOGLE_SECRET')
+        CLIENT_ID = os.environ.get('ITEM_CATALOG_GOOGLE_ID')
+        # CLIENT_SECRET = os.environ.get('ITEM_CATALOG_GOOGLE_SECRET')
         #upgrade the authorization code into a credentials object
         # oauth_flow = flow_from_clientsecrets('client_secrets.json',scope='')
-        oauth_flow = OAuth2WebServerFlow(client_id=client_id,
-                           client_secret=client_secret,
+        oauth_flow = OAuth2WebServerFlow(client_id=CLIENT_ID,
+                           client_secret=CLIENT_SECRET,
                            scope='',
                            redirect_uri='postmessage')
         credentials = oauth_flow.step2_exchange(code)
@@ -186,6 +186,13 @@ def gconnect():
         response = make_response(json.dumps("Token's user ID does not match given user ID"),401)
         response.headers['Content-type'] = 'application/json'
         return response
+
+    #verify that the access token is valid for our app
+    if result['issued_to'] != CLIENT_ID:
+        response = make_response(json.dumps("Token's user ID doesn't match app's ID"),401)
+        response.headers['Content-type'] = 'application/json'
+        return response
+
 
     response = make_response(json.dumps('Successfully Connected user'),200)
     return response
