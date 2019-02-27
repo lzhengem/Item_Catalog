@@ -9,6 +9,10 @@ from flask import session as login_session, make_response
 import random, string
 import json
 
+#imports for google login
+from oauth2client.client import OAuth2WebServerFlow
+from oauth2client.client import FlowExchangeError #if running into error while exchanging authorization token for access token
+
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
 
@@ -19,6 +23,7 @@ elif os.getenv('FLASK_ENV') == 'production':
     debug = False
     database_url = os.getenv('DATABASE_URL')
     engine = create_engine(database_url)
+
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -138,12 +143,29 @@ def showLogin():
 @app.route('/gconnect', methods=["POST"])
 def gconnect():
     state = request.args.get('state')
-    # print(state)
     #if the state is not the same, then this person is not the one who logged in our login page
     if state != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'),401)
         response.headers['Content-type'] = 'application/json'
         return response
+
+    #if the state tokens match, then get the google one time use code
+    code = request.data
+    try:
+        client_id = os.environ.get('ITEM_CATALOG_GOOGLE_ID')
+        client_secret = os.environ.get('ITEM_CATALOG_GOOGLE_SECRET')
+        #upgrade the authorization code into a credentials object
+        # oauth_flow = flow_from_clientsecrets('client_secrets.json',scope='')
+        oauth_flow = OAuth2WebServerFlow(client_id=client_id,
+                           client_secret=client_secret,
+                           scope='',
+                           redirect_uri='postmessage')
+        credentials = oauth_flow.step2_exchange(code)
+    #if unable to exchange authorization code for credentials, give error response
+    except FlowExchangeError:
+        response = make_response(json.dumps('Failed to upgrade the authorization code.'),401)
+        return response
+
     response = make_response(json.dumps('Successfully Connected user'),200)
     return response
 
