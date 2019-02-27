@@ -194,6 +194,15 @@ def gconnect():
         response.headers['Content-type'] = 'application/json'
         return response
 
+    #check to see if user is already logged in
+    stored_access_token = login_session['access_token']
+    stored_gplus_id = login_session['gplus_id']
+    #if these 2 are stored and matches, then the user is already logged in
+    if stored_access_token is not None and gplus_id == stored_gplus_id:
+        response = make_response(json.dumps('User is already connected'),200)
+        response.headers['Content-type'] = 'application/json'
+        return response
+
     #if access token user matches logged in user and client id matches our client id, get the user info from google
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
     params = {'access_token': credentials.access_token, 'alt': 'json'}
