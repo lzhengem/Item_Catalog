@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, url_for, request
+from flask import Flask, jsonify, render_template, url_for, request, redirect
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item
@@ -236,6 +236,20 @@ def gdisconnect():
         response.headers['Content-type'] = 'application/json'
         return response
 
+    #if the user is connected, get the access token and revoke it
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+
+    #if revoking was successful, reset the user's sessions and send user a 200 response
+    del login_session['gplus_id']
+    del login_session['access_token']
+    del login_session['username']
+    del login_session['email']
+    del login_session['picture']
+    del login_session['provider']
+
+    return redirect(url_for('catalog'))  
 
 if __name__ == '__main__':
 
