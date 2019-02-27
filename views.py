@@ -195,8 +195,8 @@ def gconnect():
         return response
 
     #check to see if user is already logged in
-    stored_access_token = login_session['access_token']
-    stored_gplus_id = login_session['gplus_id']
+    stored_access_token = login_session.get('access_token')
+    stored_gplus_id = login_session.get('gplus_id')
     #if these 2 are stored and matches, then the user is already logged in
     if stored_access_token is not None and gplus_id == stored_gplus_id:
         response = make_response(json.dumps('User is already connected'),200)
@@ -218,8 +218,14 @@ def gconnect():
     login_session['email'] = data['email']
 
 
-    response = make_response(json.dumps('Successfully Connected user'),200)
-    return response
+    output = ''
+    output += '<h1>Welcome, '
+    output += login_session['username']
+    output += '!</h1>'
+    output += '<img src="'
+    output += login_session['picture']
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    return output
 
 
 if __name__ == '__main__':
