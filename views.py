@@ -12,7 +12,8 @@ import json
 #imports for google login
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.client import FlowExchangeError #if running into error while exchanging authorization token for access token
-import httplib2 #HTTP client library in python
+import httplib2 #HTTP client library in python. use this one for its get method, which returns None if object is not found
+import requests #Apache 2.0 licensed HTTP library written in python
 
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
@@ -154,7 +155,7 @@ def gconnect():
     code = request.data
     try:
         CLIENT_ID = os.environ.get('ITEM_CATALOG_GOOGLE_ID')
-        # CLIENT_SECRET = os.environ.get('ITEM_CATALOG_GOOGLE_SECRET')
+        CLIENT_SECRET = os.environ.get('ITEM_CATALOG_GOOGLE_SECRET')
         #upgrade the authorization code into a credentials object
         # oauth_flow = flow_from_clientsecrets('client_secrets.json',scope='')
         oauth_flow = OAuth2WebServerFlow(client_id=CLIENT_ID,
@@ -171,7 +172,7 @@ def gconnect():
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' %access_token)
     h=httplib2.Http()
     #result contains our client id and the logged in user's info
-    result = json.loads(h.request(url,'GET')[1])
+    result = json.loads(h.request(url, 'GET')[1].decode())
 
     #if there is an error in the access token, then give error response
     if result.get('error') is not None:
@@ -192,6 +193,20 @@ def gconnect():
         response = make_response(json.dumps("Token's user ID doesn't match app's ID"),401)
         response.headers['Content-type'] = 'application/json'
         return response
+
+    #if access token user matches logged in user and client id matches our client id, get the user info from google
+    userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    params = {'access_token': credentials.access_token, 'alt': 'json'}
+    answer = requests.get(userinfo_url, params=params)
+    data = answer.json()
+
+    #store the users info in login_session
+    login_session['provider'] = 'google'
+    login_session['access_token'] = credentials.access_token
+    login_session['gplus_id'] = gplus_id
+    login_session['username'] = data['name']
+    login_session['picture'] = data['picture']
+    login_session['email'] = data['email']
 
 
     response = make_response(json.dumps('Successfully Connected user'),200)
