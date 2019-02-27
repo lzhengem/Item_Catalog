@@ -44,3 +44,8 @@ $ heroku run python3 insert_categories.py
     app.debug = debug
     port = int(os.environ.get('PORT',8000))
     app.run(host='0.0.0.0',port=port)
+
+#add the google id and google client environment for project
+heroku config:set ITEM_CATALOG_GOOGLE_ID={enter id here}
+heroku config:set ITEM_CATALOG_GOOGLE_SECRET={enter secret here}
+
