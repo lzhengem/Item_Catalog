@@ -227,6 +227,15 @@ def gconnect():
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     return output
 
+@app.route('/gdisconnect/')
+def gdisconnect():
+    #only disconnect a connected user
+    access_token = login_session.get('access_token')
+    if access_token is None:
+        response = make_response(json.dumps('Current user is not connected'),401)
+        response.headers['Content-type'] = 'application/json'
+        return response
+
 
 if __name__ == '__main__':
 
