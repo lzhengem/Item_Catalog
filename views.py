@@ -12,6 +12,7 @@ import json
 #imports for google login
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.client import FlowExchangeError #if running into error while exchanging authorization token for access token
+import httplib2 #HTTP client library in python
 
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
@@ -164,6 +165,17 @@ def gconnect():
     #if unable to exchange authorization code for credentials, give error response
     except FlowExchangeError:
         response = make_response(json.dumps('Failed to upgrade the authorization code.'),401)
+        return response
+    #if able to trade for credentials, check if access_token is valid
+    access_token = credentials.access_token
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' %access_token)
+    h=httplib2.Http()
+    result = json.loads(h.request(url,'GET')[1])
+
+    #if there is an error in the access token, then give error response
+    if result.get('error') is not None:
+        response = make_response(json.dumps(result.get('error')),500)
+        response.headers['Content-type'] = 'application/json'
         return response
 
     response = make_response(json.dumps('Successfully Connected user'),200)
