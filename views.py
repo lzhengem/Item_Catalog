@@ -42,7 +42,25 @@ def catalog():
 #a json output of all the categories
 @app.route("/catalog.json")
 def category_json():
-    return "You are at the category json page!"
+    categories = session.query(Category).all()
+    serialized_categories = []
+    for category in categories:
+        
+
+        #get all the items in the category
+        items = session.query(Item).filter_by(category=category).all()
+        serialized_items = [item.serialize for item in items]
+
+        #serialize the current category and add the serialized item to it
+        current_category = category.serialize
+        current_category.update({"items" : serialized_items})
+        
+        serialized_categories.append(current_category)
+
+
+        # print(serialized_categories)
+    serialized_categories = {"categories" : serialized_categories}
+    return json.dumps(serialized_categories,indent=4,sort_keys=True)
 
 #added items in selected category
 @app.route("/catalog/<category_id>/items/")
