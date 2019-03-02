@@ -30,12 +30,14 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+def logged_in():
+    return True if 'username' in login_session else False
 #lists all the categories
 @app.route("/")
 @app.route("/catalog/")
 def catalog():
     categories = session.query(Category).all()
-    return render_template('catalog.html', categories=categories)
+    return render_template('catalog.html', categories=categories, logged_in=logged_in())
 
 #a json output of all the categories
 @app.route("/catalog.json")
@@ -62,21 +64,20 @@ def item(category_id,item_id):
         return "Item '%s' does not exist!" % item_id
     elif item.category != category:
         return "%s does not have an item '%s'" %(category_id, item_id)
-    return render_template('item.html',category=category,item=item)
+    return render_template('item.html',category=category,item=item,logged_in=logged_in())
 
 #edit the category
 @app.route("/catalog/<item_id>/edit/", methods=["GET","POST"])
 def edit(item_id):
     item = session.query(Item).filter_by(id=item_id).first()
-
     #if they are trying to update, check if they entered any data for title and description
-    if request.method == "POST":
+    if logged_in() and request.method == "POST":
         title = request.form.get('title').strip()
         description = request.form.get('description')
         cat_id = request.form.get('cat_id')
     
         #only update if they changed one of the fields. avoids db hits
-        if item.description != description or str(item.cat_id) != cat_id or item.title != title:
+        if item and (item.description != description or str(item.cat_id) != cat_id or item.title != title):
 
             #only update the title if they provided a title that is not empty
             if title:
@@ -91,33 +92,40 @@ def edit(item_id):
     elif request.method == 'GET':
         if item:
             categories = session.query(Category).all()
-            return render_template('edit.html',item=item,categories=categories)
+            return render_template('edit.html',item=item,categories=categories, logged_in=logged_in())
         else:
             return "That item does not exist!"
+    else:
+        return render_template('edit.html',item=None,categories=None, logged_in=logged_in())
 
 #delete the category
 @app.route("/catalog/<item_id>/delete/",methods=["GET","POST"])
 def delete(item_id):
-    item = session.query(Item).filter_by(id=item_id).first()
+    if logged_in():
+        item = session.query(Item).filter_by(id=item_id).first()
 
-    #check if the item exists
-    if item is not None:
-        #if it is a post method, delete it from the database
-        if request.method == "POST":
-            session.delete(item)
-            session.commit()
-            return 'Item was deleted'
-        #if it is a get method, show the button to confirm if user wants to delete item
-        return render_template('delete.html',item=item)
-    #if the item does not exist, let the user know 
+        #check if the item exists
+        if item is not None:
+            #if it is a post method, delete it from the database
+            if request.method == "POST":
+                session.delete(item)
+                session.commit()
+                return 'Item was deleted'
+            #if it is a get method, show the button to confirm if user wants to delete item
+            return render_template('delete.html',item=item)
+        #if the item does not exist, let the user know 
+        else:
+            return "Item %s does not exist" %item_id
     else:
-        return "Item %s does not exist" %item_id
+        return 'Unauthorized Access'
 
 
 #create new item
 @app.route("/catalog/new/", methods=["GET","POST"])
 def new():
-    if request.method == 'POST':
+
+    if logged_in() and request.method == 'POST':
+        
         #check to see if they entered a title
         if request.form.get('title'):
             title = request.form.get('title')
@@ -130,8 +138,9 @@ def new():
             session.add(item)
             session.commit()
             return "You have added a new item! category id: %s , title: %s, description: %s" % (cat_id,title,description)
-    categories = session.query(Category).all()
-    return render_template('new.html',categories=categories)
+    else:
+        categories = session.query(Category).all() if logged_in() else None
+        return render_template('new.html',categories=categories, logged_in=logged_in())
 
 #allow users to log in
 @app.route('/login/')
