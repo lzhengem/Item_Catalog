@@ -60,7 +60,9 @@ def category_json():
 
         # print(serialized_categories)
     serialized_categories = {"categories" : serialized_categories}
-    return json.dumps(serialized_categories,indent=4,sort_keys=True)
+    response = make_response(jsonify(serialized_categories))
+    response.headers['Content-type'] = 'application/json'
+    return response
 
 #added items in selected category
 @app.route("/catalog/<category_id>/items/")
