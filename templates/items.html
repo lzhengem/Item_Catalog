@@ -1,19 +1,18 @@
-<html>
-    <body>
-        {{ category.name }} items:
-        {% if items.first() is not none: %}
-            <ul>
-            {% for item in items:%}
-                <li><a href="{{url_for('item',category_id=category.id,item_id=item.id)}}">{{item.title}}</a></li>
-            {% endfor %}
-            </ul>
-        {% else %}
-            </br>
-            There are no items here!
-        {% endif %}
+{% extends "navbar.html" %}
+{% block content %}
+    {{ category.name }} items:
+    {% if items.first() is not none: %}
+        <ul>
+        {% for item in items:%}
+            <li><a href="{{url_for('item',category_id=category.id,item_id=item.id)}}">{{item.title}}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        </br>
+        There are no items here!
+    {% endif %}
 
-        <br></br>
-        <a href="{{url_for('catalog')}}">Back to Catalog</a>
-        
-    </body>
-</html>
+    <br></br>
+    <a href="{{url_for('catalog')}}">Back to Catalog</a>
+    
+{% endblock %}

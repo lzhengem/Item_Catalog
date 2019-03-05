@@ -1,16 +1,14 @@
-<html>
-    <body>
-        {{ item.title }}:
-        {{item.description}}
+{% extends "navbar.html" %}
+{% block content %}
+    {{ item.title }}:
+    {{item.description}}
+    <br></br>
+    {%if logged_in: %}
+        <a href="{{url_for('edit',item_id=item.id)}}">Edit {{item.title}}</a>
         <br></br>
-        {%if logged_in: %}
-            <a href="{{url_for('edit',item_id=item.id)}}">Edit {{item.title}}</a>
-            <br></br>
-        {% endif %}
-        <a href="{{url_for('category_items',category_id=category.id)}}">Back to {{category.name}}</a>
-        <br></br>
-        <a href="{{url_for('catalog')}}">Back to Catalog</a>
+    {% endif %}
+    <a href="{{url_for('category_items',category_id=category.id)}}">Back to {{category.name}}</a>
+    <br></br>
+    <a href="{{url_for('catalog')}}">Back to Catalog</a>
 
-        
-    </body>
-</html>
+{% endblock %}

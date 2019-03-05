@@ -1,16 +1,16 @@
-<html>
-    <body>
-        Categories:
-        <ul>
-        {% for category in categories%}
-            <li><a href="{{url_for('category_items',category_id=category.id)}}"> {{category.name}}</a></li>
+{% extends "navbar.html" %}
+{% block content %}
 
-        {% endfor%}
-        </ul>
-        {% if logged_in: %}
-            <a href="{{ url_for('new')}}">Add item</a>
-        {% endif %}
+    Categories:
+    <ul>
+    {% for category in categories%}
+        <li><a href="{{url_for('category_items',category_id=category.id)}}"> {{category.name}}</a></li>
+
+    {% endfor%}
+    </ul>
+    {% if logged_in: %}
+        <a href="{{ url_for('new')}}">Add item</a>
+    {% endif %}
 
 
-    </body>
-</html>
+{% endblock %}

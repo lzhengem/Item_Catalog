@@ -1,32 +1,31 @@
-<html>
-    <body>
-        {% if logged_in: %}
-            <h1>Edit {{item.title}}:</h1>
-            <form action="{{url_for('edit',item_id=item.id)}}" method="POST">
-                Title:
-                <input type="text" name="title" value="{{item.title}}"></br>
-                Description:
-                <input type="text" name="description" value="{{item.description}}"></br>
-                Category:
-                <select name="cat_id">
-                    <!-- select the current category for this item -->
-                    {% for category in categories %}
-                        
-                        {% if item.category == category %}
-                            <option value="{{category.id}}" selected>{{category.name}} </option>
-                        {% else %}
-                            <option value="{{category.id}}">{{category.name}} </option>
-                        {% endif %}
-                        
-                    {% endfor %}
+{% extends "navbar.html" %}
+{% block content %}
+    {% if logged_in: %}
+        <h1>Edit {{item.title}}:</h1>
+        <form action="{{url_for('edit',item_id=item.id)}}" method="POST">
+            Title:
+            <input type="text" name="title" value="{{item.title}}"></br>
+            Description:
+            <input type="text" name="description" value="{{item.description}}"></br>
+            Category:
+            <select name="cat_id">
+                <!-- select the current category for this item -->
+                {% for category in categories %}
                     
-                </select>
-                <button>Submit</button>
+                    {% if item.category == category %}
+                        <option value="{{category.id}}" selected>{{category.name}} </option>
+                    {% else %}
+                        <option value="{{category.id}}">{{category.name}} </option>
+                    {% endif %}
+                    
+                {% endfor %}
+                
+            </select>
+            <button>Submit</button>
 
-                    
-            </form>
-        {% else %}
-            Unauthorized Access
-        {% endif %}
-    </body>
-</html>
+                
+        </form>
+    {% else %}
+        Unauthorized Access
+    {% endif %}
+{% endblock %}

@@ -1,11 +1,10 @@
-<html>
-    <body>
-        <h1>Deleting {{item.title}} </h1>
-        <form action="{{url_for('delete', item_id = item.id)}}" method="POST">
-            <input type="hidden" name="_method" value="DELETE" />
-            Are you sure you want to delete {{item.title}}
-            <button>Yes</button>
-            
-        </form>
-    </body>
-</html>
+{% extends "navbar.html" %}
+{% block content %}
+    <h1>Deleting {{item.title}} </h1>
+    <form action="{{url_for('delete', item_id = item.id)}}" method="POST">
+        <input type="hidden" name="_method" value="DELETE" />
+        Are you sure you want to delete {{item.title}}
+        <button>Yes</button>
+        
+    </form>
+{% endblock %}
