@@ -108,15 +108,18 @@ def edit(item_id):
             item.cat_id = cat_id
             session.add(item)
 
-            return "You have updated %s" % item.title
+            flash("You have updated %s" % item.title)
+            return redirect(url_for('edit',item_id=item_id))  
         else:
-            return "You didnt change anything!"
+            flash("You didnt change anything!")
+            return redirect(url_for('edit',item_id=item_id))  
     elif request.method == 'GET':
         if item:
             categories = session.query(Category).all()
             return render_template('edit.html',item=item,categories=categories, logged_in=logged_in())
         else:
-            return "That item does not exist!"
+            flash("Item %s does not exist!" % item_id )
+            return redirect(url_for('catalog'))  
     else:
         return render_template('edit.html',item=None,categories=None, logged_in=logged_in())
 
