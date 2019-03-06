@@ -3,11 +3,13 @@ from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item
 import os
 
-if os.getenv('FLASK_ENV') == 'development':
-    engine = create_engine('postgresql+psycopg2:///item_catalog')
-elif os.getenv('FLASK_ENV') == 'production':
+# if it is production, then use the database url
+# if it is not production, use psycopg2
+if os.getenv('FLASK_ENV') == 'production':
     database_url = os.getenv('DATABASE_URL')
     engine = create_engine(database_url)
+else:
+    engine = create_engine('postgresql+psycopg2:///item_catalog')
 
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
