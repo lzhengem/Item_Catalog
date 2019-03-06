@@ -15,6 +15,8 @@ from oauth2client.client import FlowExchangeError #if running into error while e
 import httplib2 #HTTP client library in python. use this one for its get method, which returns None if object is not found
 import requests #Apache 2.0 licensed HTTP library written in python
 
+#imports for flash messages
+from flask import flash
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
 
@@ -157,7 +159,8 @@ def new():
             item = Item(cat_id=cat_id,title=title,description=description)
             session.add(item)
             session.commit()
-            return "You have added a new item! category id: %s , title: %s, description: %s" % (cat_id,title,description)
+            flash("You have added a new item! category id: %s , title: %s, description: %s" % (cat_id,title,description))
+            return redirect(url_for('catalog'))  
     else:
         categories = session.query(Category).all() if logged_in() else None
         return render_template('new.html',categories=categories, logged_in=logged_in())
