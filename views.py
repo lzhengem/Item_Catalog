@@ -162,7 +162,8 @@ def delete(item_id):
             if request.method == "POST":
                 session.delete(item)
                 session.commit()
-                return 'Item was deleted'
+                flash('Item was deleted')
+                return redirect(url_for('catalog'))
             # if get method, show the button to confirm deletion
             return render_template('delete.html', item=item,
                                    logged_in=logged_in())
