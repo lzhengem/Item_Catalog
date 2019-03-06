@@ -73,7 +73,7 @@ def category_items(category_id):
     if category is None:
         return "There is no such category as %s!" % category_name
     items = session.query(Item).filter_by(cat_id=category.id)
-    return render_template('items.html', category=category, items=items)
+    return render_template('items.html', category=category, items=items, logged_in=logged_in())
 
 #specific item in the category
 @app.route("/catalog/<category_id>/<item_id>/")
@@ -137,7 +137,7 @@ def delete(item_id):
                 session.commit()
                 return 'Item was deleted'
             #if it is a get method, show the button to confirm if user wants to delete item
-            return render_template('delete.html',item=item)
+            return render_template('delete.html',item=item, logged_in=logged_in())
         #if the item does not exist, let the user know 
         else:
             return "Item %s does not exist" %item_id
