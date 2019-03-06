@@ -2,12 +2,16 @@
 {% block content %}
 
     Categories:
-    <ul>
+    <div class="row">
+  <div class="col-4">
+    <div class="list-group">
     {% for category in categories%}
-        <li><a href="{{url_for('category_items',category_id=category.id)}}"> {{category.name}}</a></li>
+    <a class="list-group-item list-group-item-action" href="{{url_for('category_items',category_id=category.id)}}">{{category.name}}</a>
 
     {% endfor%}
-    </ul>
+    </div>
+  </div>
+</div>
     {% if logged_in: %}
         <a href="{{ url_for('new')}}">Add item</a>
     {% endif %}
