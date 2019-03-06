@@ -4,26 +4,31 @@ Item Catalog is an app that provides a list of items within a variety of categor
 This project is viewable at https://lz-item-catalog.herokuapp.com
 
 ## Installation
-1. python3.5
+1. python3.5: Download from https://www.python.org/downloads/
 
 2. flask
+```pip3 install flask```
 
 3. sqlalchemy
+```pip3 install sqlalchemy```
 
-4. json
+4. oauth2client
+```pip3 install oauth2client```
 
-5. oauth2client.client
+5. sqlalchemy_utils
+```pip3 install sqlalchemy_utils```
 
-6. httplib2
-
-7. requests
-
-8. os
+6. psycopg2-binary
+```pip3 install psycopg2-binary```
 
 ## Usage
-1. Run the project
+1. Create the database and objects
+```python3 models.py```
+2. Create the categories
+```python3 insert_categories.py```
+3. Run the project
 ```python views.py```
-2. Go on your web browser to http://localhost:8000
+4. Go on your web browser to http://localhost:8000
 
 ## Description
 * Homepage displays all current categories along with the latest added items.
