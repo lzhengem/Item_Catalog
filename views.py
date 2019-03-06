@@ -113,7 +113,7 @@ def edit(item_id):
         else:
             flash("You didnt change anything!")
             return redirect(url_for('edit',item_id=item_id))  
-    elif request.method == 'GET':
+    elif logged_in() and request.method == 'GET':
         if item:
             categories = session.query(Category).all()
             return render_template('edit.html',item=item,categories=categories, logged_in=logged_in())
@@ -121,7 +121,8 @@ def edit(item_id):
             flash("Item %s does not exist!" % item_id )
             return redirect(url_for('catalog'))  
     else:
-        return render_template('edit.html',item=None,categories=None, logged_in=logged_in())
+        flash('Unauthorized access')
+        return redirect(url_for('catalog'))  
 
 #delete the category
 @app.route("/catalog/<item_id>/delete/",methods=["GET","POST"])
@@ -140,9 +141,11 @@ def delete(item_id):
             return render_template('delete.html',item=item, logged_in=logged_in())
         #if the item does not exist, let the user know 
         else:
-            return "Item %s does not exist" %item_id
+            flash("Item %s does not exist" %item_id)
+            return redirect(url_for('catalog'))  
     else:
-        return 'Unauthorized Access'
+        flash('Unauthorized Access')
+        return redirect(url_for('catalog'))  
 
 
 #create new item
