@@ -37,7 +37,7 @@ This project is viewable at https://lz-item-catalog.herokuapp.com
 
 3. Run the project
 
-```python views.py```
+```python3 views.py```
 
 4. Go on your web browser to http://localhost:8000
 
