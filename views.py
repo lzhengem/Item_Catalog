@@ -20,6 +20,7 @@ from flask import flash
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
 
+#if development, use the postgres engine, if in production(Heroku), then use their database url
 if os.getenv('FLASK_ENV') == 'development':
     debug = True
     engine = create_engine('postgresql+psycopg2:///item_catalog')
@@ -28,12 +29,15 @@ elif os.getenv('FLASK_ENV') == 'production':
     database_url = os.getenv('DATABASE_URL')
     engine = create_engine(database_url)
 
+#bind the engine
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+#check to see if user is logged in
 def logged_in():
     return True if 'username' in login_session else False
+
 #lists all the categories
 @app.route("/")
 @app.route("/catalog/")
@@ -53,25 +57,26 @@ def category_json():
         items = session.query(Item).filter_by(category=category).all()
         serialized_items = [item.serialize for item in items]
 
-        #serialize the current category and add the serialized item to it
+        #serialize the current category and add its serialized items to it
         current_category = category.serialize
         current_category.update({"items" : serialized_items})
-        
         serialized_categories.append(current_category)
 
-
-        # print(serialized_categories)
+    #output the categories and its items
     serialized_categories = {"categories" : serialized_categories}
     response = make_response(jsonify(serialized_categories))
     response.headers['Content-type'] = 'application/json'
     return response
 
-#added items in selected category
+#show the category and its items
 @app.route("/catalog/<category_id>/items/")
 def category_items(category_id):
     category = session.query(Category).filter_by(id=category_id).first()
+
+    #if the category does not exist, then flash an error message and return to homepage
     if category is None:
-        return "There is no such category as %s!" % category_name
+        flash("There is no such category as %s!" % category_name)
+        return redirect(url_for('catalog'))
     items = session.query(Item).filter_by(cat_id=category.id)
     return render_template('items.html', category=category, items=items, logged_in=logged_in())
 
@@ -80,12 +85,17 @@ def category_items(category_id):
 def item(category_id,item_id):
     category = session.query(Category).filter_by(id=category_id).first()
     item = session.query(Item).filter_by(id=item_id).first()
+
+    #if theres no category or item, then flash error message
     if category is None:
-        return "Category '%s' does not exist!" % category_id
+        flash("Category '%s' does not exist!" % category_id)
+        return redirect(url_for('catalog'))
     elif item is None:
-        return "Item '%s' does not exist!" % item_id
+        flask("Item '%s' does not exist!" % item_id)
+        return redirect(url_for('catalog'))
     elif item.category != category:
-        return "%s does not have an item '%s'" %(category_id, item_id)
+        flask("%s does not have an item '%s'" %(category_id, item_id))
+        return redirect(url_for('catalog'))
     return render_template('item.html',category=category,item=item,logged_in=logged_in())
 
 #edit the category
@@ -108,19 +118,24 @@ def edit(item_id):
             item.cat_id = cat_id
             session.add(item)
 
+            #let user know the item has been updated
             flash("You have updated %s" % item.title)
             return redirect(url_for('edit',item_id=item_id))  
         else:
+            #if there was no change, flash error message
             flash("You didnt change anything!")
-            return redirect(url_for('edit',item_id=item_id))  
+            return redirect(url_for('edit',item_id=item_id))
+    #if the user is logged in and it was a get request, show them the edit form        
     elif logged_in() and request.method == 'GET':
         if item:
             categories = session.query(Category).all()
             return render_template('edit.html',item=item,categories=categories, logged_in=logged_in())
         else:
+            #if the item does not exist, flash error message
             flash("Item %s does not exist!" % item_id )
             return redirect(url_for('catalog'))  
     else:
+        #if user is not logged in, flash error message and then redirect to homepage
         flash('Unauthorized access')
         return redirect(url_for('catalog'))  
 
@@ -153,21 +168,19 @@ def delete(item_id):
 def new():
 
     if logged_in() and request.method == 'POST':
-        
         #check to see if they entered a title
         if request.form.get('title'):
-            title = request.form.get('title')
-            if session.query(Item).filter_by(title=title).first() is not None:
-                return "That item exists already"
-
+            #get the category and description and enter it into the database
             cat_id = request.form.get('category')
             description = request.form.get('description')
             item = Item(cat_id=cat_id,title=title,description=description)
             session.add(item)
             session.commit()
+            #flash a message to let them know the item has been created
             flash("You have added a new item! category id: %s , title: %s, description: %s" % (cat_id,title,description))
             return redirect(url_for('catalog'))  
     else:
+        #show the 'new' form
         categories = session.query(Category).all() if logged_in() else None
         return render_template('new.html',categories=categories, logged_in=logged_in())
 
