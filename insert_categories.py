@@ -10,7 +10,7 @@ elif os.getenv('FLASK_ENV') == 'production':
     engine = create_engine(database_url)
 
 Base.metadata.bind = engine
-DBSession = sessionmaker(bind = engine)
+DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 Soccer = Category(name='Soccer')

@@ -6,31 +6,34 @@ import os
 
 
 Base = declarative_base()
+
+
 class Category(Base):
     __tablename__ = 'category'
-    id = Column(Integer, primary_key = True)
-    name = Column(String, index = True, nullable=False)
+    id = Column(Integer, primary_key=True)
+    name = Column(String, index=True, nullable=False)
 
     @property
     def serialize(self):
-        return {'id' : self.id,
-                'name' : self.name}
-    
+        return {'id': self.id,
+                'name': self.name}
+
 
 class Item(Base):
     __tablename__ = 'item'
-    id = Column(Integer, primary_key = True)
-    title = Column(String, index = True, nullable=False)
+    id = Column(Integer, primary_key=True)
+    title = Column(String, index=True, nullable=False)
     description = Column(String)
     cat_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
 
     @property
     def serialize(self):
-        return {'cat_id' : self.cat_id,
-                'description' : self.description,
-                'id' : self.id,
-                'title' : self.title}    
+        return {'cat_id': self.cat_id,
+                'description': self.description,
+                'id': self.id,
+                'title': self.title}
+
 
 if os.getenv('FLASK_ENV') == 'development':
     engine = create_engine('postgresql+psycopg2:///item_catalog')
