@@ -183,6 +183,7 @@ def new():
         # check to see if they entered a title
         if request.form.get('title'):
             # get the category and description and enter it into the database
+            title = request.form.get('title')
             cat_id = request.form.get('category')
             description = request.form.get('description')
             item = Item(cat_id=cat_id, title=title, description=description)
