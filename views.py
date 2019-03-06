@@ -24,15 +24,15 @@ from flask import flash
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
 
-# if development, use the postgres engine, if in production(Heroku)
-# then use their database url
-if os.getenv('FLASK_ENV') == 'development':
-    debug = True
-    engine = create_engine('postgresql+psycopg2:///item_catalog')
-elif os.getenv('FLASK_ENV') == 'production':
+# if in production(Heroku) then use their database url
+# else it is development, use the postgres engine, 
+if os.getenv('FLASK_ENV') == 'production':
     debug = False
     database_url = os.getenv('DATABASE_URL')
     engine = create_engine(database_url)
+else:
+    debug = True
+    engine = create_engine('postgresql+psycopg2:///item_catalog')
 
 # bind the engine
 Base.metadata.bind = engine
