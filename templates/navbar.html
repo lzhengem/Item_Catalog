@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Bootstrap Example</title>
+        <title>Item Catalog</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -20,16 +20,16 @@
                   <li class="nav-item">
                     <a class="nav-link" href="{{url_for('catalog')}}">Home</a>
                   </li>
-                  <li class="nav-item dropdown">
+<!--                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Categories
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <a class="dropdown-item" href="#">Something else here</a>
+                        {% for category in g.categories: %}
+                            <a class="dropdown-item" href="#">Action</a>
+                        {% endfor %}
                     </div>
-                  </li>
+                  </li> -->
                   <li class="nav-item">
                     <a class="nav-link" href="{{url_for('showLogin')}}">Login</a>
                   </li>
