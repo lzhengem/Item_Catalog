@@ -31,7 +31,7 @@ This project is viewable at https://lz-item-catalog.herokuapp.com
 
 ```python3 models.py```
 
-2. Create the categories
+2. Insert categories into database
 
 ```python3 insert_categories.py```
 
@@ -39,7 +39,9 @@ This project is viewable at https://lz-item-catalog.herokuapp.com
 
 ```python3 views.py```
 
-4. Go on your web browser to http://localhost:8000
+4. Go on your web browser to http://localhost:8000. Recommended browser is Chrome.
+
+5. If the login button does not show up in http://localhost:8000/login, then make sure to clear your cache.
 
 ## Description
 * Homepage displays all current categories along with the latest added items.
