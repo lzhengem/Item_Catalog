@@ -223,8 +223,10 @@ def gconnect():
     # if the state tokens match, then get the google one time use code
     code = request.data
     try:
-        CLIENT_ID = os.environ.get('ITEM_CATALOG_GOOGLE_ID')
-        CLIENT_SECRET = os.environ.get('ITEM_CATALOG_GOOGLE_SECRET')
+        # CLIENT_ID = os.environ.get('ITEM_CATALOG_GOOGLE_ID')
+        # CLIENT_SECRET = os.environ.get('ITEM_CATALOG_GOOGLE_SECRET')
+        CLIENT_ID = json.loads(open('client_secrets.json','r').read())['web']['client_id']
+        CLIENT_SECRET = json.loads(open('client_secrets.json','r').read())['web']['client_secret']
         # upgrade the authorization code into a credentials object
         # oauth_flow = flow_from_clientsecrets('client_secrets.json',scope='')
         oauth_flow = OAuth2WebServerFlow(client_id=CLIENT_ID,
