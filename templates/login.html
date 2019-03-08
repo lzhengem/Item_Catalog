@@ -21,35 +21,37 @@
         <button id="signinButton" class="btn btn-primary">Google Signin</button>
         <div id="result"></div>
         <script>
-            function signInCallback(authResult) {
-                console.log("my object: %o", authResult);
-                if (authResult['code']) { //if google sent back a code, that means the login was sucessful
-                    //hide the signin button
-                    $('#signinButton').attr('style','display:none');
-                    //send the one time use code to the server. if the server responds, write a 'login sucessfull' message to the webpage and then redirect back to the main restaurant page
-                    $.ajax({
-                        //asynchronously send a POST request to /gconnect?state={{STATE}}
-                        type: 'POST',
-                        url: '/gconnect?state={{STATE}}', //need to define gconnect method. STATE is our server state token to prevent requests forgery
-                        processData: false, //do not ask jQuery to process response as string
-                        contentType: 'application/octet-stream; charset=utf-8', //indicates we are sending arbitrary binary stream of data
-                        data: authResult['code'], //the data we will send
-                        //if we get success code from the post request,display login successfull
-                        success: function(result){
-                            if(result){ //result is any additional information google server has to give us
-                                $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
-                                setTimeout(function(){window.location.href="/catalog/";},4000);
+            $('#signinButton').click(function() {
+                function signInCallback(authResult) {
+                    console.log("my object: %o", authResult);
+                    if (authResult['code']) { //if google sent back a code, that means the login was sucessful
+                        //hide the signin button
+                        $('#signinButton').attr('style','display:none');
+                        //send the one time use code to the server. if the server responds, write a 'login sucessfull' message to the webpage and then redirect back to the main restaurant page
+                        $.ajax({
+                            //asynchronously send a POST request to /gconnect?state={{STATE}}
+                            type: 'POST',
+                            url: '/gconnect?state={{STATE}}', //need to define gconnect method. STATE is our server state token to prevent requests forgery
+                            processData: false, //do not ask jQuery to process response as string
+                            contentType: 'application/octet-stream; charset=utf-8', //indicates we are sending arbitrary binary stream of data
+                            data: authResult['code'], //the data we will send
+                            //if we get success code from the post request,display login successfull
+                            success: function(result){
+                                if(result){ //result is any additional information google server has to give us
+                                    $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
+                                    setTimeout(function(){window.location.href="/catalog/";},4000);
+                                }
+                                //if there was an error, then log it
+                                else if (authResult['error']){
+                                    console.log('There was an error: ' + authResult['error']);
+                                }
+                                //if there was no response, tell user to check config
+                                else{
+                                    $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                                }
                             }
-                            //if there was an error, then log it
-                            else if (authResult['error']){
-                                console.log('There was an error: ' + authResult['error']);
-                            }
-                            //if there was no response, tell user to check config
-                            else{
-                                $('#result').html('Failed to make a server-side call. Check your configuration and console.');
-                            }
-                        }
-                    });
+                        });
+                    }
                 }
             }
         </script>
