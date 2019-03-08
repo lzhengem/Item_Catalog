@@ -18,18 +18,7 @@
 {% block content %}
         <!-- GOOGLE PLUS SIGN IN-->
 
-        <div id="signinButton">
-            <span class="g-signin"
-                data-scope="openid email profile"
-                data-clientid="969469785706-k799tcl9nple8g3h1fkbdnqutk3s85rs.apps.googleusercontent.com"
-                data-redirecturi="postmessage"
-                data-accesstype="offline"
-                data-cookiepolicy="single_host_origin"
-                data-callback="signInCallback"
-                data-approvalprompt="force">                
-            </span>
-        </div>
-
+        <button id="signinButton" class="btn btn-primary">Google Signin</button>
         <div id="result"></div>
         <script>
             function signInCallback(authResult) {
