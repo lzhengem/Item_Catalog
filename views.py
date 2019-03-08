@@ -25,7 +25,7 @@ app = Flask(__name__)
 app.secret_key = 'super_secret_key'
 
 # if in production(Heroku) then use their database url
-# else it is development, use the postgres engine, 
+# else it is development, use the postgres engine
 if os.getenv('FLASK_ENV') == 'production':
     debug = False
     database_url = os.getenv('DATABASE_URL')
@@ -225,8 +225,10 @@ def gconnect():
     try:
         # CLIENT_ID = os.environ.get('ITEM_CATALOG_GOOGLE_ID')
         # CLIENT_SECRET = os.environ.get('ITEM_CATALOG_GOOGLE_SECRET')
-        CLIENT_ID = json.loads(open('client_secrets.json','r').read())['web']['client_id']
-        CLIENT_SECRET = json.loads(open('client_secrets.json','r').read())['web']['client_secret']
+        CLIENT_ID = json.loads(open('client_secrets.json',
+                                    'r').read())['web']['client_id']
+        CLIENT_SECRET = json.loads(open('client_secrets.json',
+                                   'r').read())['web']['client_secret']
         # upgrade the authorization code into a credentials object
         # oauth_flow = flow_from_clientsecrets('client_secrets.json',scope='')
         oauth_flow = OAuth2WebServerFlow(client_id=CLIENT_ID,
