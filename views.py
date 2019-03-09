@@ -40,21 +40,23 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-# check to see if user is logged in
 def logged_in():
+    """check to see if user is logged in"""
     return True if 'username' in login_session else False
 
-# lists all the categories
+
 @app.route("/")
 @app.route("/catalog/")
 def catalog():
+    """lists all the categories"""
     categories = session.query(Category).all()
     return render_template('catalog.html', categories=categories,
                            logged_in=logged_in())
 
-# show the category and its items
+
 @app.route("/catalog/<category_id>/items/")
 def category_items(category_id):
+    """show the category and its items"""
     category = session.query(Category).filter_by(id=category_id).first()
 
     # if the category does not exist, flash an error message
@@ -65,9 +67,10 @@ def category_items(category_id):
     return render_template('items.html', category=category, items=items,
                            logged_in=logged_in())
 
-# specific item in the category
+
 @app.route("/catalog/<category_id>/<item_id>/")
 def item(category_id, item_id):
+    """specific item in the category"""
     category = session.query(Category).filter_by(id=category_id).first()
     item = session.query(Item).filter_by(id=item_id).first()
 
@@ -84,9 +87,10 @@ def item(category_id, item_id):
     return render_template('item.html', category=category, item=item,
                            logged_in=logged_in())
 
-# a json output of all the categories along with its items
+
 @app.route("/catalog.json")
 def catalog_json():
+    """json output of all the categories along with its items"""
     categories = session.query(Category).all()
     serialized_categories = []
     for category in categories:
@@ -106,33 +110,38 @@ def catalog_json():
     response.headers['Content-type'] = 'application/json'
     return response
 
-# a json output of all the categories without its items
+
 @app.route("/categories.json")
 def categories_json():
+    """json output of all the categories without its items"""
     categories = session.query(Category).all()
-    response = make_response(jsonify([category.serialize for category in categories]))
+    serialized_categories = [category.serialize for category in categories]
+    response = make_response(jsonify(serialized_categories))
     response.headers['Content-type'] = 'application/json'
     return response
 
-# a json output of the category
+
 @app.route("/catalog/<category_id>/json/")
 def category_items_json(category_id):
+    """json output of the category"""
     category = session.query(Category).filter_by(id=category_id).first()
     response = make_response(jsonify(category.serialize))
     response.headers['Content-type'] = 'application/json'
     return response
 
-# json output of specific item in the category
+
 @app.route("/catalog/<category_id>/<item_id>/json")
 def item_json(category_id, item_id):
+    """json output of specific item in the category"""
     item = session.query(Item).filter_by(id=item_id).one()
     response = make_response(jsonify(item.serialize))
     response.headers['Content-type'] = 'application/json'
     return response
 
-# edit the category
+
 @app.route("/catalog/<item_id>/edit/", methods=["GET", "POST"])
 def edit(item_id):
+    """Updates the title, description, and catalog id for selected item"""
     item = session.query(Item).filter_by(id=item_id).first()
     # if post method,check if they entered any data for title and description
     if logged_in() and request.method == "POST":
@@ -174,9 +183,10 @@ def edit(item_id):
         flash('Unauthorized access')
         return redirect(url_for('catalog'))
 
-# delete the category
+
 @app.route("/catalog/<item_id>/delete/", methods=["GET", "POST"])
 def delete(item_id):
+    """Deletes the selected item"""
     if logged_in():
         item = session.query(Item).filter_by(id=item_id).first()
 
@@ -200,9 +210,9 @@ def delete(item_id):
         return redirect(url_for('catalog'))
 
 
-# create new item
 @app.route("/catalog/new/", methods=["GET", "POST"])
 def new():
+    """Creates a new item"""
 
     if logged_in() and request.method == 'POST':
         # check to see if they entered a title
@@ -224,9 +234,11 @@ def new():
         return render_template('new.html', categories=categories,
                                logged_in=logged_in())
 
-# allow users to log in
+
 @app.route('/login/')
 def showLogin():
+    """Generates a state and shows a login page"""
+
     # create a random string state to prevent cross site forgery
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
@@ -237,6 +249,7 @@ def showLogin():
 
 @app.route('/gconnect', methods=["POST"])
 def gconnect():
+    """Connect using google login"""
     state = request.args.get('state')
     # if the state is not the same, then reject connection
     if state != login_session['state']:
@@ -332,6 +345,7 @@ def gconnect():
 
 @app.route('/gdisconnect/')
 def gdisconnect():
+    """Disconnects a connected google logged in user"""
     # only disconnect a connected user
     access_token = login_session.get('access_token')
     if access_token is None:
