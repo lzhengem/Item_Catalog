@@ -73,6 +73,12 @@ def item(category_id, item_id):
     """specific item in the category"""
     category = session.query(Category).filter_by(id=category_id).first()
     item = session.query(Item).filter_by(id=item_id).first()
+    # check to see if the edit and delete link should be shown to this user
+    show_update_links = False
+    if logged_in():
+        user_id = getUserID(login_session['email'])
+        if item.user_id == user_id:
+            show_update_links = True
 
     # if theres no category or item, then flash error message
     if category is None:
@@ -85,7 +91,7 @@ def item(category_id, item_id):
         flask("%s does not have an item '%s'" % (category_id, item_id))
         return redirect(url_for('catalog'))
     return render_template('item.html', category=category, item=item,
-                           logged_in=logged_in())
+                           show_update_links=show_update_links)
 
 
 @app.route("/catalog.json")
