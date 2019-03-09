@@ -52,9 +52,9 @@ def catalog():
     return render_template('catalog.html', categories=categories,
                            logged_in=logged_in())
 
-# a json output of all the categories
+# a json output of all the categories along with its items
 @app.route("/catalog.json")
-def category_json():
+def catalog_json():
     categories = session.query(Category).all()
     serialized_categories = []
     for category in categories:
@@ -71,6 +71,14 @@ def category_json():
     # output the categories and its items
     serialized_categories = {"categories": serialized_categories}
     response = make_response(jsonify(serialized_categories))
+    response.headers['Content-type'] = 'application/json'
+    return response
+
+# a json output of all the categories
+@app.route("/categories.json")
+def categories_json():
+    categories = session.query(Category).all()
+    response = make_response(jsonify([category.serialize for category in categories]))
     response.headers['Content-type'] = 'application/json'
     return response
 
