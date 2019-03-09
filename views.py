@@ -247,6 +247,15 @@ def showLogin():
     return render_template('login.html', STATE=state)
 
 
+def getUserID(email):
+    """Get a user's id based on email"""
+    try:
+        user = session.query(User).filter_by(email = email).one()
+        return user.id
+    except:
+        return None
+
+
 @app.route('/gconnect', methods=["POST"])
 def gconnect():
     """Connect using google login"""
