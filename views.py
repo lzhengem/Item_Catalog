@@ -221,7 +221,8 @@ def new():
             title = request.form.get('title')
             cat_id = request.form.get('category')
             description = request.form.get('description')
-            item = Item(cat_id=cat_id, title=title, description=description)
+            user_id = getUserID(login_session['email'])
+            item = Item(cat_id=cat_id, title=title, description=description, user_id=user_id)
             session.add(item)
             session.commit()
             # flash a message to let them know the item has been created
