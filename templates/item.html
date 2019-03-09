@@ -1,7 +1,7 @@
 {% extends "navbar.html" %}
 {% block content %}
     {{ item.title }}:
-    {{item.description}}
+    {{item.description}}, owner: {{ owner.email }}
     <br></br>
     {%if show_update_links: %}
         <a href="{{url_for('edit',item_id=item.id)}}">Edit {{item.title}}</a>
