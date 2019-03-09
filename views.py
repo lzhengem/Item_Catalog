@@ -73,6 +73,7 @@ def item(category_id, item_id):
     """specific item in the category"""
     category = session.query(Category).filter_by(id=category_id).first()
     item = session.query(Item).filter_by(id=item_id).first()
+    owner = getUserInfo(item.user_id)
     # check to see if the edit and delete link should be shown to this user
     show_update_links = False
     if logged_in():
@@ -91,7 +92,7 @@ def item(category_id, item_id):
         flask("%s does not have an item '%s'" % (category_id, item_id))
         return redirect(url_for('catalog'))
     return render_template('item.html', category=category, item=item,
-                           show_update_links=show_update_links)
+                           owner=owner, show_update_links=show_update_links)
 
 
 @app.route("/catalog.json")
@@ -201,6 +202,13 @@ def delete(item_id):
     """Deletes the selected item"""
     if logged_in():
         item = session.query(Item).filter_by(id=item_id).first()
+        user_id = getUserID(login_session['email'])
+
+        # if the logged in person is not the owner of the item,
+        # do not let them delete the item
+        if item.user_id != user_id:
+            flash('Unauthorized Access')
+            return redirect(url_for('catalog'))
 
         # check if the item exists
         if item is not None:
