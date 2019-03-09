@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, url_for, request, redirect
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Category, Item
+from models import Base, Category, Item, User
 import os
 
 # for login
@@ -262,6 +262,15 @@ def getUserInfo(user_id):
     return user
 
 
+def createUser(login_session):
+    """creates a new user using the info stored in the login_session and saves it in the database"""
+    newUser = User(email = login_session['email'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email = login_session['email']).one()
+    return user.id
+
+
 @app.route('/gconnect', methods=["POST"])
 def gconnect():
     """Connect using google login"""
@@ -346,6 +355,13 @@ def gconnect():
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
+
+    #check to see if user is found in database and then populate the login_session['user_id']
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    user = getUserInfo(user_id)
+    login_session['user_id'] = user.id    
 
     output = ''
     output += '<h1>Welcome, '
