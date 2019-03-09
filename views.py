@@ -145,28 +145,34 @@ def edit(item_id):
     item = session.query(Item).filter_by(id=item_id).first()
     # if post method,check if they entered any data for title and description
     if logged_in() and request.method == "POST":
-        title = request.form.get('title').strip()
-        description = request.form.get('description')
-        cat_id = request.form.get('cat_id')
+        user_id = getUserID(login_session['email'])
+        if item.user_id == user_id:
+            title = request.form.get('title').strip()
+            description = request.form.get('description')
+            cat_id = request.form.get('cat_id')
 
-        # only update if they changed one of the fields. avoids db hits
-        if item and (item.description != description or
-                     str(item.cat_id) != cat_id or item.title != title):
+            # only update if they changed one of the fields. avoids db hits
+            if item and (item.description != description or
+                         str(item.cat_id) != cat_id or item.title != title):
 
-            # only update the title if they provided a title that is not empty
-            if title:
-                item.title = title
-            item.description = description
-            item.cat_id = cat_id
-            session.add(item)
+                # only update the title if they provided a title that is not empty
+                if title:
+                    item.title = title
+                item.description = description
+                item.cat_id = cat_id
+                session.add(item)
 
-            # let user know the item has been updated
-            flash("You have updated %s" % item.title)
-            return redirect(url_for('edit', item_id=item_id))
+                # let user know the item has been updated
+                flash("You have updated %s" % item.title)
+                return redirect(url_for('edit', item_id=item_id))
+            else:
+                # if there was no change, flash error message
+                flash("You didnt change anything!")
+                return redirect(url_for('edit', item_id=item_id))
         else:
-            # if there was no change, flash error message
-            flash("You didnt change anything!")
-            return redirect(url_for('edit', item_id=item_id))
+            # if user is not logged in, flash error message
+            flash('Unauthorized access')
+            return redirect(url_for('catalog'))
     # if the user is logged in and get request, show them the edit form
     elif logged_in() and request.method == 'GET':
         if item:
