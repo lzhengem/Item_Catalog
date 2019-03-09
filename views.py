@@ -122,6 +122,14 @@ def category_items_json(category_id):
     response.headers['Content-type'] = 'application/json'
     return response
 
+# json output of specific item in the category
+@app.route("/catalog/<category_id>/<item_id>/json")
+def item_json(category_id, item_id):
+    item = session.query(Item).filter_by(id=item_id).one()
+    response = make_response(jsonify(item.serialize))
+    response.headers['Content-type'] = 'application/json'
+    return response
+
 # edit the category
 @app.route("/catalog/<item_id>/edit/", methods=["GET", "POST"])
 def edit(item_id):
