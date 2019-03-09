@@ -1,5 +1,4 @@
 from sqlalchemy import create_engine
-# from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item, User
 import os
 
@@ -11,4 +10,5 @@ if os.getenv('FLASK_ENV') == 'production':
 else:
     engine = create_engine('postgresql+psycopg2:///item_catalog')
 
-Base.metadata.drop_all(bind=engine, tables=[Item.__table__, User.__table__, Category.__table__])
+Base.metadata.drop_all(bind=engine, tables=[Item.__table__,
+                       User.__table__, Category.__table__])

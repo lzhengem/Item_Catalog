@@ -2,6 +2,8 @@ from flask import Flask, jsonify, render_template, url_for, request, redirect
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item, User
+# import for catching sqlalchemy exceptions
+from sqlalchemy import exc
 import os
 
 # for login
@@ -23,6 +25,7 @@ import requests
 from flask import flash
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
+
 
 # if in production(Heroku) then use their database url
 # else it is development, use the postgres engine
@@ -162,7 +165,8 @@ def edit(item_id):
             if item and (item.description != description or
                          str(item.cat_id) != cat_id or item.title != title):
 
-                # only update the title if they provided a title that is not empty
+                # only update the title if they
+                # provided a title that is not empty
                 if title:
                     item.title = title
                 item.description = description
@@ -242,7 +246,8 @@ def new():
             cat_id = request.form.get('category')
             description = request.form.get('description')
             user_id = getUserID(login_session['email'])
-            item = Item(cat_id=cat_id, title=title, description=description, user_id=user_id)
+            item = Item(cat_id=cat_id, title=title, description=description,
+                        user_id=user_id)
             session.add(item)
             session.commit()
             # flash a message to let them know the item has been created
@@ -271,24 +276,25 @@ def showLogin():
 def getUserID(email):
     """Get a user's id based on email"""
     try:
-        user = session.query(User).filter_by(email = email).one()
-        return user.id
-    except:
+        user = session.query(User).filter_by(email=email).one()
+        # return user.id
+    except exc.SQLAlchemyError:
         return None
 
 
 def getUserInfo(user_id):
     """get a user based on their id"""
-    user = session.query(User).filter_by(id = user_id).one()
+    user = session.query(User).filter_by(id=user_id).one()
     return user
 
 
 def createUser(login_session):
-    """creates a new user using the info stored in the login_session and saves it in the database"""
-    newUser = User(email = login_session['email'])
+    """creates a new user using the info stored in the
+    login_session and saves it in the database"""
+    newUser = User(email=login_session['email'])
     session.add(newUser)
     session.commit()
-    user = session.query(User).filter_by(email = login_session['email']).one()
+    user = session.query(User).filter_by(email=login_session['email']).one()
     return user.id
 
 
@@ -377,12 +383,13 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
-    #check to see if user is found in database and then populate the login_session['user_id']
+    # check to see if user is found in database and
+    # then populate the login_session['user_id']
     user_id = getUserID(login_session['email'])
     if not user_id:
         user_id = createUser(login_session)
     user = getUserInfo(user_id)
-    login_session['user_id'] = user.id    
+    login_session['user_id'] = user.id
 
     output = ''
     output += '<h1>Welcome, '
