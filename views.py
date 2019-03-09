@@ -52,36 +52,6 @@ def catalog():
     return render_template('catalog.html', categories=categories,
                            logged_in=logged_in())
 
-# a json output of all the categories along with its items
-@app.route("/catalog.json")
-def catalog_json():
-    categories = session.query(Category).all()
-    serialized_categories = []
-    for category in categories:
-
-        # get all the items in the category
-        items = session.query(Item).filter_by(category=category).all()
-        serialized_items = [item.serialize for item in items]
-
-        # serialize the current category and add its serialized items to it
-        current_category = category.serialize
-        current_category.update({"items": serialized_items})
-        serialized_categories.append(current_category)
-
-    # output the categories and its items
-    serialized_categories = {"categories": serialized_categories}
-    response = make_response(jsonify(serialized_categories))
-    response.headers['Content-type'] = 'application/json'
-    return response
-
-# a json output of all the categories
-@app.route("/categories.json")
-def categories_json():
-    categories = session.query(Category).all()
-    response = make_response(jsonify([category.serialize for category in categories]))
-    response.headers['Content-type'] = 'application/json'
-    return response
-
 # show the category and its items
 @app.route("/catalog/<category_id>/items/")
 def category_items(category_id):
@@ -113,6 +83,44 @@ def item(category_id, item_id):
         return redirect(url_for('catalog'))
     return render_template('item.html', category=category, item=item,
                            logged_in=logged_in())
+
+# a json output of all the categories along with its items
+@app.route("/catalog.json")
+def catalog_json():
+    categories = session.query(Category).all()
+    serialized_categories = []
+    for category in categories:
+
+        # get all the items in the category
+        items = session.query(Item).filter_by(category=category).all()
+        serialized_items = [item.serialize for item in items]
+
+        # serialize the current category and add its serialized items to it
+        current_category = category.serialize
+        current_category.update({"items": serialized_items})
+        serialized_categories.append(current_category)
+
+    # output the categories and its items
+    serialized_categories = {"categories": serialized_categories}
+    response = make_response(jsonify(serialized_categories))
+    response.headers['Content-type'] = 'application/json'
+    return response
+
+# a json output of all the categories without its items
+@app.route("/categories.json")
+def categories_json():
+    categories = session.query(Category).all()
+    response = make_response(jsonify([category.serialize for category in categories]))
+    response.headers['Content-type'] = 'application/json'
+    return response
+
+# a json output of the category
+@app.route("/catalog/<category_id>/json/")
+def category_items_json(category_id):
+    category = session.query(Category).filter_by(id=category_id).first()
+    response = make_response(jsonify(category.serialize))
+    response.headers['Content-type'] = 'application/json'
+    return response
 
 # edit the category
 @app.route("/catalog/<item_id>/edit/", methods=["GET", "POST"])
