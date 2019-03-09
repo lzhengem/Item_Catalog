@@ -277,8 +277,8 @@ def getUserID(email):
     """Get a user's id based on email"""
     try:
         user = session.query(User).filter_by(email=email).one()
-        # return user.id
-    except exc.SQLAlchemyError:
+        return user.id
+    except NoResultFound:
         return None
 
 
