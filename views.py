@@ -256,6 +256,12 @@ def getUserID(email):
         return None
 
 
+def getUserInfo(user_id):
+    """get a user based on their id"""
+    user = session.query(User).filter_by(id = user_id).one()
+    return user
+
+
 @app.route('/gconnect', methods=["POST"])
 def gconnect():
     """Connect using google login"""
