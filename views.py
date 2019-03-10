@@ -95,7 +95,8 @@ def item(category_id, item_id):
         flask("%s does not have an item '%s'" % (category_id, item_id))
         return redirect(url_for('catalog'))
     return render_template('item.html', category=category, item=item,
-                           owner=owner, show_update_links=show_update_links)
+                           owner=owner, show_update_links=show_update_links,
+                           logged_in=logged_in())
 
 
 @app.route("/catalog.json")
