@@ -278,14 +278,17 @@ def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
-    except NoResultFound:
+    except exc.SQLAlchemyError:
         return None
 
 
 def getUserInfo(user_id):
     """get a user based on their id"""
-    user = session.query(User).filter_by(id=user_id).one()
-    return user
+    try:
+        user = session.query(User).filter_by(id=user_id).first()
+        return user
+    except exc.SQLAlchemyError:
+        return None
 
 
 def createUser(login_session):
