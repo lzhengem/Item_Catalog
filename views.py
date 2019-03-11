@@ -184,7 +184,7 @@ def edit(item_id):
                     session.add(item)
                     session.commit()
                     flash("You have updated %s" % item.title)
-                    return redirect(url_for('edit', item_id=item_id))
+                    return redirect(url_for('item', category_id=item.cat_id,item_id=item_id))
                 else:
                     # if there was no change, flash error message
                     flash("You didnt change anything!")
