@@ -42,7 +42,7 @@ class Item(Base):
                 'description': self.description,
                 'id': self.id,
                 'title': self.title,
-                'user_id' : self.user_id}
+                'user_id': self.user_id}
 
 
 if os.getenv('FLASK_ENV') == 'production':

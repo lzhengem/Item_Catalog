@@ -170,10 +170,10 @@ def edit(item_id):
                 description = request.form.get('description')
                 cat_id = request.form.get('cat_id')
 
-
                 # only update if they changed one of the fields. avoids db hits
                 if item and (item.description != description or
-                             str(item.cat_id) != cat_id or item.title != title):
+                             str(item.cat_id) != cat_id or
+                             item.title != title):
 
                     # only update the title if they
                     # provided a title that is not empty
@@ -184,7 +184,8 @@ def edit(item_id):
                     session.add(item)
                     session.commit()
                     flash("You have updated %s" % item.title)
-                    return redirect(url_for('item', category_id=item.cat_id,item_id=item_id))
+                    return redirect(url_for('item', category_id=item.cat_id,
+                                    item_id=item_id))
                 else:
                     # if there was no change, flash error message
                     flash("You didnt change anything!")
@@ -217,7 +218,7 @@ def delete(item_id):
             # do not let them delete the item
             if item.user_id != user_id:
                 flash('Unauthorized Access')
-                return redirect(url_for('catalog'))            
+                return redirect(url_for('catalog'))
             # if it is a post method, delete it from the database
             if request.method == "POST":
                 session.delete(item)
