@@ -5,42 +5,25 @@ Item Catalog is an app that provides a list of items within a variety of categor
 
 ## Installation
 1. python3.5: Download from https://www.python.org/downloads/
-
 2. flask
-
-```pip3 install flask```
-
+    * ```pip3 install flask```
 3. sqlalchemy
-
-```pip3 install sqlalchemy```
-
+    * ```pip3 install sqlalchemy```
 4. oauth2client
-
-```pip3 install oauth2client```
-
+    * ```pip3 install oauth2client```
 5. sqlalchemy_utils
-
-```pip3 install sqlalchemy_utils```
-
+    * ```pip3 install sqlalchemy_utils```
 6. psycopg2-binary
-
-```pip3 install psycopg2-binary```
+    * ```pip3 install psycopg2-binary```
 
 ## Usage
 1. Create the database and objects
-
-```python3 models.py```
-
+    * ```python3 models.py```
 2. Insert categories into database
-
-```python3 insert_categories.py```
-
+    * ```python3 insert_categories.py```
 3. Run the project
-
-```python3 views.py```
-
+    * ```python3 views.py```
 4. Go on your web browser to http://localhost:8000. Recommended browser is Chrome.
-
 5. If the login button does not show up in http://localhost:8000/login, then make sure to clear your cache.
 
 ## Description
