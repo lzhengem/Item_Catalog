@@ -211,14 +211,13 @@ def delete(item_id):
         item = session.query(Item).filter_by(id=item_id).first()
         user_id = getUserID(login_session['email'])
 
-        # if the logged in person is not the owner of the item,
-        # do not let them delete the item
-        if item.user_id != user_id:
-            flash('Unauthorized Access')
-            return redirect(url_for('catalog'))
-
         # check if the item exists
         if item is not None:
+            # if the logged in person is not the owner of the item,
+            # do not let them delete the item
+            if item.user_id != user_id:
+                flash('Unauthorized Access')
+                return redirect(url_for('catalog'))            
             # if it is a post method, delete it from the database
             if request.method == "POST":
                 session.delete(item)
