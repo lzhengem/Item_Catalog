@@ -41,7 +41,8 @@ class Item(Base):
         return {'cat_id': self.cat_id,
                 'description': self.description,
                 'id': self.id,
-                'title': self.title}
+                'title': self.title,
+                'user_id' : self.user_id}
 
 
 if os.getenv('FLASK_ENV') == 'production':
