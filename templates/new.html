@@ -4,9 +4,9 @@
         <h1>Create a new item:</h1>
         <form action="{{url_for('new')}}" method="POST">
             Title:
-            <input type="text" name="title" required pattern="^[^\s]+.*[^\s]+$"></br>
+            <input type="text" name="title" required pattern="^[^\s]+.*[^\s]*$"></br>
             Description:
-            <input type="text" name="description" required pattern="^[^\s]+.*[^\s]+$"></br>
+            <input type="text" name="description" required pattern="^[^\s]+.*[^\s]*$"></br>
             Category:
             <select name="category" required>
                 {% for category in categories%}
