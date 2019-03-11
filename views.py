@@ -141,7 +141,7 @@ def category_items_json(category_id):
     return response
 
 
-@app.route("/catalog/<category_id>/<item_id>/json")
+@app.route("/catalog/<category_id>/<item_id>/json/")
 def item_json(category_id, item_id):
     """json output of specific item in the category"""
     item = session.query(Item).filter_by(id=item_id).one()
