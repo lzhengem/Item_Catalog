@@ -380,7 +380,7 @@ def gconnect():
     login_session['provider'] = 'google'
     login_session['access_token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
-    login_session['username'] = data['name']
+    login_session['username'] = data.get('name','')
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
