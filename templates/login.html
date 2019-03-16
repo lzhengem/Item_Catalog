@@ -4,10 +4,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
     <script>
+
       function start() {
         gapi.load('auth2', function() {
           auth2 = gapi.auth2.init({
-            client_id: '969469785706-k799tcl9nple8g3h1fkbdnqutk3s85rs.apps.googleusercontent.com'
+            client_id: '{{CLIENT_ID}}'
           });
         });
       }

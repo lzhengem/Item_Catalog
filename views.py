@@ -268,7 +268,9 @@ def showLogin():
                     for x in range(32))
     # save state in session
     login_session['state'] = state
-    return render_template('login.html', STATE=state)
+    CLIENT_ID = json.loads(open('client_secrets.json',
+                                        'r').read())['web']['client_id']    
+    return render_template('login.html', STATE=state, CLIENT_ID=CLIENT_ID)
 
 
 def getUserID(email):
