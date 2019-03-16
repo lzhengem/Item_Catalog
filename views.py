@@ -426,6 +426,7 @@ def gdisconnect():
     del login_session['email']
     del login_session['picture']
     del login_session['provider']
+    del login_session['user_id']
 
     return redirect(url_for('catalog'))
 
