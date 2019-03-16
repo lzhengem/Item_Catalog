@@ -1,28 +1,23 @@
-from flask import Flask, jsonify, render_template, url_for, request, redirect
-from sqlalchemy import create_engine
+from flask import (Flask, jsonify, render_template, url_for, request,
+                   redirect, session as login_session, make_response, flash)
+from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import sessionmaker
 from models import Base, Category, Item, User
-# import for catching sqlalchemy exceptions
-from sqlalchemy import exc
 import os
 
 # for login
-from flask import session as login_session, make_response
 import random
 import string
 import json
 
 # imports for google login
-from oauth2client.client import OAuth2WebServerFlow
-# catch errors while exchanging authorization token for access token
-from oauth2client.client import FlowExchangeError
+from oauth2client.client import (OAuth2WebServerFlow, FlowExchangeError)
+
 # HTTP client library. get method returns None if object is not found
 import httplib2
 # Apache 2.0 licensed HTTP library written in python
 import requests
 
-# imports for flash messages
-from flask import flash
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
 
