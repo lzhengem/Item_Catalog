@@ -139,7 +139,7 @@ def category_items_json(category_id):
 @app.route("/catalog/<category_id>/<item_id>/json/")
 def item_json(category_id, item_id):
     """json output of specific item in the category"""
-    item = session.query(Item).filter_by(id=item_id).one()
+    item = session.query(Item).filter_by(id=item_id).one_or_none()
     response = make_response(jsonify(item.serialize))
     response.headers['Content-type'] = 'application/json'
     return response
@@ -274,7 +274,7 @@ def showLogin():
 def getUserID(email):
     """Get a user's id based on email"""
     try:
-        user = session.query(User).filter_by(email=email).one()
+        user = session.query(User).filter_by(email=email).one_or_none()
         return user.id
     except exc.SQLAlchemyError:
         return None
@@ -295,7 +295,7 @@ def createUser(login_session):
     newUser = User(email=login_session['email'])
     session.add(newUser)
     session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
+    user = session.query(User).filter_by(email=login_session['email']).one_or_none()
     return user.id
 
 
