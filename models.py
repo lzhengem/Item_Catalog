@@ -49,7 +49,7 @@ if os.getenv('FLASK_ENV') == 'production':
     database_url = os.getenv('DATABASE_URL')
     engine = create_engine(database_url)
 else:
-    engine = create_engine('postgresql+psycopg2:///item_catalog')
+    engine = create_engine('postgresql+psycopg2://ubuntu:password@localhost/item_catalog')
 # if item_catalog does not exist yet, then create it
 if not database_exists(engine.url):
     create_database(engine.url)
