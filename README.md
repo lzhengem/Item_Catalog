@@ -97,6 +97,8 @@ Item Catalog is an app that provides a list of items within a variety of categor
     * Create psql user ubuntu
     * Grant permissions to item_catalog to ubuntu
 18. Created \_\_init\_\_.py file which is the main driver of apache project
+19. Login to grader using:
+    ```ssh grader@35.167.198.96 -p 2200 -i /path/to/the/file/lightsail_grader/```
 
 
 ## Description
